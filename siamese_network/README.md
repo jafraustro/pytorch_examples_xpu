@@ -4,5 +4,5 @@
 pip install -r requirements.txt
 python main.py
 # CUDA_VISIBLE_DEVICES=2 python main.py  # to specify GPU id to ex. 2
---no-xpu to desaible training in XPU
+--no-xpu to disable training in XPU
 ```
