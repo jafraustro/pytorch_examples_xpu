@@ -31,10 +31,16 @@ ImageNet dataset is large and time-consuming to download. To get started quickly
 python main.py -a resnet18 --dummy
 ```
 
+To test XPU
+
+```bash
+python main.py -a resnet18 --gpu xpu --dummy
+```
+
 ## Multi-processing Distributed Data Parallel Training
 
 You should always use the NCCL backend for multi-processing distributed training since it currently provides the best distributed training performance.
-
+Multiprocessing is not tested yet in XPU
 ### Single node, multiple GPUs:
 
 ```bash
@@ -95,7 +101,7 @@ optional arguments:
   --dist-backend DIST_BACKEND
                         distributed backend
   --seed SEED           seed for initializing training.
-  --gpu GPU             GPU id to use.
+  --gpu GPU             GPU id to use CUDA devices or xpu to use XPU.
   --multiprocessing-distributed
                         Use multi-processing distributed training to launch N processes per node, which has N GPUs. This is the fastest way to use PyTorch for either single node or multi node data parallel
                         training
