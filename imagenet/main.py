@@ -69,8 +69,10 @@ parser.add_argument('--dist-backend', default='nccl', type=str,
                     help='distributed backend')
 parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
-parser.add_argument('--gpu', default=None, type=str,
-                    help='GPU id to use, card number for CUDA or xpu for XPU.')
+parser.add_argument('--gpu', default=None, type=int,
+                    help='GPU id to use.')
+parser.add_argument("--xpu", type=int, default=False,
+                    help="set it to 1 for running on XPU, 0 for CPU")
 parser.add_argument('--multiprocessing-distributed', action='store_true',
                     help='Use multi-processing distributed training to launch '
                          'N processes per node, which has N GPUs. This is the '
@@ -135,6 +137,9 @@ def main_worker(gpu, ngpus_per_node, args):
     if args.gpu is not None:
         print("Use GPU: {} for training".format(args.gpu))
 
+    if args.xpu is not False:
+        print("Use XPU for training")
+
     if args.distributed:
         if args.dist_url == "env://" and args.rank == -1:
             args.rank = int(os.environ["RANK"])
@@ -152,7 +157,7 @@ def main_worker(gpu, ngpus_per_node, args):
         print("=> creating model '{}'".format(args.arch))
         model = models.__dict__[args.arch]()
 
-    if not torch.cuda.is_available() and not torch.backends.mps.is_available() and not torch.xpu.is_available():
+    if not torch.cuda.is_available() and not torch.backends.mps.is_available() and args.xpu is False:
         print('using CPU, this will be slow')
     elif args.distributed:
         # For multiprocessing distributed, DistributedDataParallel constructor
@@ -176,7 +181,7 @@ def main_worker(gpu, ngpus_per_node, args):
     elif args.gpu is not None and torch.cuda.is_available():
         torch.cuda.set_device(args.gpu)
         model = model.cuda(args.gpu)
-    elif args.gpu is not None and torch.xpu.is_available():
+    elif args.xpu is not False and torch.xpu.is_available():
         device = torch.device("xpu")
         model = model.to(device)
     elif torch.backends.mps.is_available():
@@ -195,7 +200,7 @@ def main_worker(gpu, ngpus_per_node, args):
             device = torch.device('cuda:{}'.format(args.gpu))
         else:
             device = torch.device("cuda")
-    elif torch.xpu.is_available():
+    elif args.xpu is not False and torch.xpu.is_available():
         device = torch.device("xpu")
     elif torch.backends.mps.is_available():
         device = torch.device("mps")
@@ -366,7 +371,7 @@ def validate(val_loader, model, criterion, args):
                 i = base_progress + i
                 if args.gpu is not None and torch.cuda.is_available():
                     images = images.cuda(args.gpu, non_blocking=True)
-                if args.gpu is not None and torch.xpu.is_available():
+                if args.xpu is not False and torch.xpu.is_available():
                     images = images.to("xpu")
                     target = target.to("xpu")
                 if torch.backends.mps.is_available():
