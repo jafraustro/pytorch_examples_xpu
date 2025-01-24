@@ -110,11 +110,6 @@ def main():
         ngpus_per_node = torch.cuda.device_count()
         if ngpus_per_node == 1 and args.dist_backend == "nccl":
             warnings.warn("nccl backend >=2.5 requires GPU count>1, see https://github.com/NVIDIA/nccl/issues/103 perhaps use 'gloo'")
-    ## candicate code for XPU 
-    #elif torch.xpu.is_available():
-    #    ngpus_per_node = torch.xpu.device_count()
-    #    if ngpus_per_node == 1 and args.dist_backend == "oneccl":
-    #        warnings.warn("oneccl backend >=2021.14 requires GPU count>1, see https://github.com/NVIDIA/nccl/issues/103 perhaps use 'gloo'")
     else:
         ngpus_per_node = 1
 
