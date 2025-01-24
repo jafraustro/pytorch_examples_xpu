@@ -38,7 +38,7 @@ def train(args):
     else:
         device = torch.device("cpu")
 
-    print ("Device in usage: ", device)
+    print ("Device in use: ", device)
 
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -131,7 +131,7 @@ def train(args):
 def stylize(args):
     device = torch.device("cuda" if args.cuda else "cpu")
     device = torch.device("xpu" if args.xpu else "cpu")
-    print ("Device in usage: ", device)
+    print ("Device in use: ", device)
 
     content_image = utils.load_image(args.content_image, scale=args.content_scale)
     content_transform = transforms.Compose([
@@ -215,8 +215,6 @@ def main():
                                   help="set it to 1 for running on GPU, 0 for CPU")
     train_arg_parser.add_argument("--xpu", type=int, default=False,
                                   help="set it to 1 for running on XPU, 0 for CPU")
-    train_arg_parser.add_argument("--mps", type=int, default=False,
-                                  help="set it to 1 for enable macOS GPU training, 0 for CPU")
     train_arg_parser.add_argument("--seed", type=int, default=42,
                                   help="random seed for training")
     train_arg_parser.add_argument("--content-weight", type=float, default=1e5,
