@@ -158,7 +158,7 @@ def stylize(args):
     else:
         with torch.no_grad():
             style_model = TransformerNet()
-            state_dict = torch.load(args.model)
+            state_dict = torch.load(args.model, weights_only=True)
             # remove saved deprecated running_* keys in InstanceNorm from the checkpoint
             for k in list(state_dict.keys()):
                 if re.search(r'in\d+\.running_(mean|var)$', k):
