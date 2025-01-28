@@ -12,19 +12,23 @@ parser.add_argument('--input_image', type=str, required=True, help='input image 
 parser.add_argument('--model', type=str, required=True, help='model file to use')
 parser.add_argument('--output_filename', type=str, help='where to save the output image')
 parser.add_argument('--cuda', action='store_true', help='use cuda')
+parser.add_argument('--xpu', action='store_true', help='Enables XPU for inference')
 opt = parser.parse_args()
 
 print(opt)
 img = Image.open(opt.input_image).convert('YCbCr')
 y, cb, cr = img.split()
 
-model = torch.load(opt.model)
+model = torch.load(opt.model, weights_only=False)
 img_to_tensor = ToTensor()
 input = img_to_tensor(y).view(1, -1, y.size[1], y.size[0])
 
 if opt.cuda:
     model = model.cuda()
     input = input.cuda()
+elif opt.xpu:
+    model = model.xpu()
+    input = input.xpu()
 
 out = model(input)
 out = out.cpu()
