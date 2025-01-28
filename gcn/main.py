@@ -199,7 +199,7 @@ def test(model, criterion, input, target, mask):
 
 
 if __name__ == '__main__':
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    # device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     parser = argparse.ArgumentParser(description='PyTorch Graph Convolutional Network')
     parser.add_argument('--epochs', type=int, default=200,
@@ -214,13 +214,13 @@ if __name__ == '__main__':
                         help='dimension of the hidden representation (default: 16)')
     parser.add_argument('--val-every', type=int, default=20,
                         help='epochs to wait for print training and validation evaluation (default: 20)')
-    parser.add_argument('--include-bias', action='store_true', default=False,
+    parser.add_argument('--include-bias', action='store_true',
                         help='use bias term in convolutions (default: False)')
-    parser.add_argument('--no-cuda', action='store_true', default=False,
+    parser.add_argument('--no-cuda', action='store_true',
                         help='disables CUDA training')
-    parser.add_argument('--no-mps', action='store_true', default=False,
+    parser.add_argument('--no-mps', action='store_true',
                         help='disables macOS GPU training')
-    parser.add_argument('--dry-run', action='store_true', default=False,
+    parser.add_argument('--dry-run', action='store_true',
                         help='quickly check a single pass')
     parser.add_argument('--seed', type=int, default=42, metavar='S',
                         help='random seed (default: 42)')
