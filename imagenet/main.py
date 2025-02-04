@@ -71,8 +71,8 @@ parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
 parser.add_argument('--gpu', default=None, type=int,
                     help='GPU id to use.')
-parser.add_argument("--xpu", type=int, default=False,
-                    help="set it to 1 for running on XPU, 0 for CPU")
+parser.add_argument("--xpu", default=False, type=bool,
+                    help="set it to True for running on XPU, False for CPU")
 parser.add_argument('--multiprocessing-distributed', action='store_true',
                     help='Use multi-processing distributed training to launch '
                          'N processes per node, which has N GPUs. This is the '

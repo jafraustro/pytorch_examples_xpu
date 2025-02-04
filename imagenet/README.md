@@ -34,7 +34,7 @@ python main.py -a resnet18 --dummy
 To test XPU
 
 ```bash
-python main.py -a resnet18 --xpu 1 --dummy
+python main.py -a resnet18 --xpu True --dummy
 ```
 
 ## Multi-processing Distributed Data Parallel Training
