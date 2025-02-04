@@ -17,7 +17,7 @@ from transformer_net import TransformerNet
 from vgg import Vgg16
 
 
-def check_paths(args):
+def check_paths(args,device):
     try:
         if not os.path.exists(args.save_model_dir):
             os.makedirs(args.save_model_dir)
@@ -28,21 +28,7 @@ def check_paths(args):
         sys.exit(1)
 
 
-def train(args):
-
-    use_cuda = not args.no_cuda and torch.cuda.is_available()
-    use_xpu = not args.no_xpu and torch.xpu.is_available()
-    if use_cuda:
-        device = torch.device("cuda")
-    elif use_xpu:
-        device = torch.device("xpu")
-    elif args.mps:
-        device = torch.device("mps")
-    else:
-        device = torch.device("cpu")
-
-    print ("Device in use: ", device)
-
+def train(args,device):
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
 
@@ -131,19 +117,7 @@ def train(args):
     print("\nDone, trained model saved at", save_model_path)
 
 
-def stylize(args):
-    use_cuda = not args.no_cuda and torch.cuda.is_available()
-    use_xpu = not args.no_xpu and torch.xpu.is_available()
-    if use_cuda:
-        device = torch.device("cuda")
-    elif use_xpu:
-        device = torch.device("xpu")
-    elif args.mps:
-        device = torch.device("mps")
-    else:
-        device = torch.device("cpu")
-
-    print ("Device in use: ", device)
+def stylize(args,device):
     
     content_image = utils.load_image(args.content_image, scale=args.content_scale)
     content_transform = transforms.Compose([
@@ -254,35 +228,38 @@ def main():
                                  help="disables Cuda evaluation")
     eval_arg_parser.add_argument('--no-xpu', action="store_true", default=False,
                                  help="disables XPU evaluation")
-    #eval_arg_parser.add_argument("--cuda", type=int, default=False,
-    #                             help="set it to 1 for running on cuda, 0 for CPU")
-    #eval_arg_parser.add_argument("--xpu", type=int, default=False,
-    #                             help="set it to 1 for running on xpu, 0 for CPU")
     eval_arg_parser.add_argument("--export_onnx", type=str,
                                  help="export ONNX model to a given file")
     eval_arg_parser.add_argument('--mps', action='store_true', default=False, help='enable macOS GPU training')
 
     args = main_arg_parser.parse_args()
 
+    use_cuda = not args.no_cuda and torch.cuda.is_available()
+    use_xpu = not args.no_xpu and torch.xpu.is_available()
+    if use_cuda:
+        device = torch.device("cuda")
+    elif use_xpu:
+        device = torch.device("xpu")
+    elif args.mps:
+        device = torch.device("mps")
+    else:
+        device = torch.device("cpu")
+
+    print ("Device in use: ", device)
+
 
     if args.subcommand is None:
         print("ERROR: specify either train or eval")
         sys.exit(1)
     
-    #if args.cuda and not torch.cuda.is_available():
-    #    print("ERROR: cuda is not available, try running on CPU")
-    #    sys.exit(1)
-    #if args.xpu and not torch.xpu.is_available():
-    #    print("ERROR: xpu is not available, try running on CPU")
-    #    sys.exit(1)
     if not args.mps and torch.backends.mps.is_available():
         print("WARNING: mps is available, run with --mps to enable macOS GPU")
 
     if args.subcommand == "train":
-        check_paths(args)
-        train(args)
+        check_paths(args,device)
+        train(args,device)
     else:
-        stylize(args)
+        stylize(args,device)
 
 
 if __name__ == "__main__":
