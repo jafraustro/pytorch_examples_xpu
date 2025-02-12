@@ -14,9 +14,8 @@ The main.py script accepts the following arguments:
 optional arguments:
   --batch-size		input batch size for training (default: 128)
   --epochs		number of epochs to train (default: 10)
-  --no-cuda		disables CUDA training
-  --no-mps              disables GPU on macOS
-  --no-xpu              disables XPU training in Intel GPUs
+  --no-cuda		enables CUDA training
+  --mps         enables GPU on macOS
   --seed		random seed (default: 1)
   --log-interval	how many batches to wait before logging training status
 ```
