@@ -17,7 +17,7 @@ from transformer_net import TransformerNet
 from vgg import Vgg16
 
 
-def check_paths(args,device):
+def check_paths(args):
     try:
         if not os.path.exists(args.save_model_dir):
             os.makedirs(args.save_model_dir)
